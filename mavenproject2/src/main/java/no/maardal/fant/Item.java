@@ -5,6 +5,9 @@
  */
 package no.maardal.fant;
 
+import java.math.BigDecimal;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+
 /**
  * An item to be sold in the Fant webstore
  * @author Martin
@@ -16,18 +19,20 @@ public class Item {
     private String title;
     private String description;
     private String category;
-
-    private User seller;
+    
+    private BigDecimal price;
+    
+    private FormDataMultiPart photos;
 
     public Item() {
     }
 
-    public Item(long id, String title, String description, String category, User seller) {
+    public Item(long id, String title, String description, String category,
+            BigDecimal price) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.category = category;
-        this.seller = seller;
     }
 
     public long getId() {
@@ -62,13 +67,13 @@ public class Item {
         this.category = category;
     }
 
-    public User getSeller() {
-        return seller;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setSeller(User seller) {
-        this.seller = seller;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
-    
+   
     
 }
