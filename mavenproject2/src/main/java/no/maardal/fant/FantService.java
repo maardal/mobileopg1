@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.Response;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 /**
  * REST service class to be used by the UI
