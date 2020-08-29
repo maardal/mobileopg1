@@ -1,5 +1,11 @@
-Item Class
-addItem Method.
-Test adding items
-getItems Method.
-Test getting items.
+Read through task
+Define needed classes
+    Add a Bid Class?
+Define outward API
+Implement naive methods for that API
+    addItem Method.
+        Response.created().build;
+    getItems Method.
+        Just return a static list at first
+Add Bean Validation to Entity classes
+Add JPA Annotations.

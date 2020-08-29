@@ -46,7 +46,8 @@ public class FantService {
      */
     public Response addItem(String title, String description, BigDecimal price,
             FormDataMultiPart photos) {
-        return Response.ok().build();
+        return Response.ok().build(); 
+        //NB Response should be 201 -> .created(location)
     }
     
     /**
