@@ -1,25 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package no.maardal.fant;
 
 import no.maardal.fant.entities.Item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -41,9 +33,9 @@ public class FantService {
      * @return 
      */
     @GET
-    
+    @Path("all")
     public List<Item> getItems() {
-        return new ArrayList<>(); //to avoid errors
+        return new ArrayList<>(); //only to be able to compile.
     }
     
     @GET
@@ -79,7 +71,7 @@ public class FantService {
     public Response addItem(@FormParam("title") String title,
                             @FormParam("desc") String description,
                             @FormParam("price") BigDecimal price,
-                            @FormDataParam("photos") FormDataMultiPart photos,
+                            FormDataMultiPart photos,
                             @Context UriInfo uriInfo) {
         Item item = new Item(title, description, price);
         UriBuilder builder = uriInfo.getAbsolutePathBuilder();
@@ -99,9 +91,9 @@ public class FantService {
      */
     
     @GET
-    @Path("getPhoto")
-    public Response getPhoto(@QueryParam("name") String name,
-                             @QueryParam("widht") int width) {
+    @Path("photo/{name}")
+    public Response getPhoto(@PathParam("name") String name,
+                             @QueryParam("width") int width) {
         return Response.ok().build();
     }
 }
