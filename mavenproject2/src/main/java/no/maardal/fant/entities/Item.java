@@ -38,8 +38,15 @@ public class Item implements Serializable{
     public Item() {
     }
 
-    public Item(String title, BigDecimal price, FormDataMultiPart photos) {
+    public Item(String title, String description, BigDecimal price) {
         this.title = title;
+        this.description = description;
+        this.price = price;
+    }
+    
+    public Item(String title, String description, BigDecimal price, FormDataMultiPart photos) {
+        this.title = title;
+        this.description = description;
         this.price = price;
         this.photos = photos;
     }
