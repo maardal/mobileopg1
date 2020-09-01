@@ -1,10 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package no.maardal.fant;
 
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import no.maardal.fant.entities.User;
 import javax.ws.rs.core.Response;
 
@@ -12,7 +11,13 @@ import javax.ws.rs.core.Response;
  * REST service class used for authentication
  * @author Martin
  */
+@Path("auth")
 public class AuthenticationService {
+    
+    @GET
+    public Response alive() {
+        return Response.ok("alive").build();
+    }
     
     /**
      * Authenticates user based on userid and password.
@@ -22,8 +27,11 @@ public class AuthenticationService {
      * 
      * @return result of the request.
      */
-    public Response login(String userid, String password) {
-        return Response.ok().build();
+    @POST
+    @Path("login")
+    public Response login(@FormParam("userid") String userid,
+                          @FormParam("password") String password) {
+        return Response.ok("login").build();
     }
     
     /**
@@ -33,14 +41,19 @@ public class AuthenticationService {
      * @param password
      * @return 
      */
-    public Response createUser(String userid, String password) {
-        return Response.ok().build();
+    @POST
+    @Path("createUser")
+    public Response createUser(@FormParam("userid") String userid,
+                               @FormParam("password") String password) {
+        return Response.ok("create").build();
     }
      
     /**
      * 
      * @return 
      */
+    @GET
+    @Path("currentUser")
     public User getCurrentUser() {
         return new User();
     }
@@ -52,8 +65,11 @@ public class AuthenticationService {
      * @param password
      * @return 
      */
-    public Response changePassword(String userid, String password) {
-        return Response.ok().build();
+    @POST
+    @Path("changePassword")
+    public Response changePassword(@FormParam("userid") String userid,
+                                   @FormParam("password") String password) {
+        return Response.ok("change").build();
     }
     
 }
