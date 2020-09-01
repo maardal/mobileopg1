@@ -1,6 +1,33 @@
 Read through task
-Define needed classes
-    Add a Bid Class?
+Oppgåve 1)
+    A) Opprette bruker -> createUser AuthService
+    B) Logge på -> login AuthService
+    B) Redigere ressurser -> changePassword AuthService
+
+Oppgåve 2)
+    A) Sjå kva varer som er til salgs -> getItems (alle)
+    B) Alle entiteter skal ha fornuftige sjekker på sine attributter
+
+Oppgåve 3)
+    A) Legge til varer om innlogget
+    B) Kjøpe varer om innlogget
+    Bid klasse?
+
+Oppgåve 4)
+    A) Registrere kjøper i systemet, om kjøper vare og innlogget.
+    B) Sende epost til selger når vare solgt.
+
+Oppgåve 5)
+    A) Lagre all data i database
+
+Oppgåve 6)
+    A) Autentiserer nettverksoperasjonar med JSON Web Token
+
+Oppgåve 7)
+    A) Opprette ein tjener på Autodeploy.uials.no med Ubuntu 20.04 som template
+
+Oppgåve 8)
+    A) Kjøre oppgåve #2 i Docker på tjeneren
 Define outward API
 Implement naive methods for that API
     addItem Method.

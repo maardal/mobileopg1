@@ -5,6 +5,7 @@
  */
 package no.maardal.fant;
 
+import no.maardal.fant.entities.User;
 import javax.ws.rs.core.Response;
 
 /**

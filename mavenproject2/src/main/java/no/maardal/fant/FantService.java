@@ -5,6 +5,7 @@
  */
 package no.maardal.fant;
 
+import no.maardal.fant.entities.Item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
