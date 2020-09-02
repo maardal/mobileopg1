@@ -51,6 +51,22 @@ public class Item implements Serializable{
         this.photos = photos;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public void setPhotos(FormDataMultiPart photos) {
+        this.photos = photos;
+    }
+
     public long getItemId() {
         return itemId;
     }
