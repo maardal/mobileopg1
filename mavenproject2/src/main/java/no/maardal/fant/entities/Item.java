@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 /**
@@ -24,12 +25,15 @@ public class Item implements Serializable{
     @Column(name = "id")
     private long itemId;
     
+    @NotNull
     @Column(name = "title", nullable = false)
     private String title;
     
+    @NotNull
     @Column(name = "description", nullable = false)
     private String description;
 
+    @NotNull
     @Column(name = "price", nullable = false)
     private BigDecimal price;
     
