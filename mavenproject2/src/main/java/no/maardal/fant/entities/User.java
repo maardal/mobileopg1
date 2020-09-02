@@ -45,7 +45,7 @@ public class User implements Serializable{
     private String lastName;
     
     @Column(name = "user_group", nullable = false)
-    private String group;
+    List<Group> groups;
 
     public User() {
     }
@@ -77,8 +77,11 @@ public class User implements Serializable{
         return lastName;
     }
 
-    public String getGroup() {
-        return group;
+    public List<Group> getGroups() {
+        if (groups == null) {
+            groups = new ArrayList<>();
+        }
+        return groups;
     }
 
     public void setPassword(String password) {
