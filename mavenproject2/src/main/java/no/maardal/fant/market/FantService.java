@@ -41,7 +41,7 @@ public class FantService {
     @GET
     @Path("/{itemId}")
     public Response getAnItem(@PathParam("itemId") long itemID) {
-        return Response.ok("tulla " + itemID).build();
+        return Response.ok("itemID " + itemID).build();
     }
     
     /**
