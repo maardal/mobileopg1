@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package no.maardal.fant.entities;
+package no.maardal.fant.market;
 
 /**
  * Represents a photo or an image of an item for sale.

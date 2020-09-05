@@ -1,6 +1,6 @@
-package no.maardal.fant;
+package no.maardal.fant.market;
 
-import no.maardal.fant.entities.Item;
+import no.maardal.fant.market.Item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

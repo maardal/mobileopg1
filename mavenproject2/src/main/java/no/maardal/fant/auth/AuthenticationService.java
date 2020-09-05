@@ -1,10 +1,9 @@
-package no.maardal.fant;
+package no.maardal.fant.auth;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import no.maardal.fant.entities.User;
 import javax.ws.rs.core.Response;
 
 /**

@@ -1,4 +1,4 @@
-package no.maardal.fant.entities;
+package no.maardal.fant.market;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

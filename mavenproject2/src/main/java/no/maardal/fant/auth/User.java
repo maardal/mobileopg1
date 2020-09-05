@@ -1,5 +1,6 @@
-package no.maardal.fant.entities;
+package no.maardal.fant.auth;
 
+import no.maardal.fant.auth.Group;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
