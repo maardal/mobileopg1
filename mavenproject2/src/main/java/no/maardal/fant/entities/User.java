@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -28,8 +27,8 @@ public class User implements Serializable{
     @Column(name = "userid")
     private long userId;
    
-    @Email(message = "Please provide a valid e-mail")
-    @NotEmpty
+    @Email
+    @NotNull
     @Column(name = "email", nullable = false, unique = true)
     private String email;
     

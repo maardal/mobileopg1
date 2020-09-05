@@ -4,21 +4,19 @@ import no.maardal.fant.entities.Item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 /**
  * REST service class to be used by the UI
@@ -42,7 +40,6 @@ public class FantService {
     
     @GET
     @Path("/{itemId}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getAnItem(@PathParam("itemId") long itemID) {
         return Response.ok("tulla " + itemID).build();
     }
@@ -71,7 +68,6 @@ public class FantService {
      */
     @POST
     @Path("add")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response addItem(@FormParam("title") String title,
                             @FormParam("desc") String description,
                             @FormParam("price") BigDecimal price,
@@ -96,7 +92,6 @@ public class FantService {
     
     @GET
     @Path("photo/{name}")
-    @Produces("image/jpeg")
     public Response getPhoto(@PathParam("name") String name,
                              @QueryParam("width") int width) {
         return Response.ok().build();

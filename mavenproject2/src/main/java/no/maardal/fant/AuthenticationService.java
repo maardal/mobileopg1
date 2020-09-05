@@ -1,15 +1,11 @@
 package no.maardal.fant;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import no.maardal.fant.entities.User;
 import javax.ws.rs.core.Response;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 /**
  * REST service class used for authentication
@@ -33,11 +29,9 @@ public class AuthenticationService {
      */
     @POST
     @Path("login")
-    //@Consumes("multipart/form-data")
-    //@Produces(MediaType.APPLICATION_JSON)
-    public Response login(@FormDataParam("userid") String userid,
-                          @FormDataParam("password") String password) {
-        return Response.status(Response.Status.ACCEPTED).build();
+    public Response login(@FormParam("userid") String userid,
+                          @FormParam("password") String password) {
+        return Response.ok("login").build();
     }
     
     /**
@@ -48,8 +42,7 @@ public class AuthenticationService {
      * @return 
      */
     @POST
-    @Path("createuser")
-    @Consumes()
+    @Path("createUser")
     public Response createUser(@FormParam("userid") String userid,
                                @FormParam("password") String password) {
         return Response.ok("create").build();
@@ -61,7 +54,6 @@ public class AuthenticationService {
      */
     @GET
     @Path("currentUser")
-    @Produces(MediaType.APPLICATION_JSON)
     public User getCurrentUser() {
         return new User();
     }
@@ -74,7 +66,7 @@ public class AuthenticationService {
      * @return 
      */
     @POST
-    @Path("changepassword")
+    @Path("changePassword")
     public Response changePassword(@FormParam("userid") String userid,
                                    @FormParam("password") String password) {
         return Response.ok("change").build();
