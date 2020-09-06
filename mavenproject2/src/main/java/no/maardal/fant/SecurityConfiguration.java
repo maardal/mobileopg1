@@ -7,7 +7,7 @@ import no.maardal.fant.auth.Group;
 import org.eclipse.microprofile.auth.LoginConfig;
 
 @DatabaseIdentityStoreDefinition(
-    dataSourceLookup = DatasourceProducer.JNDI_NAME,
+    dataSourceLookup = DataSourceProducer.JNDI_NAME,
     callerQuery = "select password from auser where userid = ?",
     groupsQuery = "select name from ausergroup where userid = ?",
     hashAlgorithm = PasswordHash.class,

@@ -47,7 +47,7 @@ public class User implements Serializable{
     
     @Id
     @Column(name = "userid")
-    private long userId;
+    private String userId;
     
     @Version
     Timestamp version;
