@@ -1,18 +1,31 @@
 package no.maardal.fant.auth;
 
-import no.maardal.fant.auth.Group;
 import java.io.Serializable;
+import java.security.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.Version;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import static no.maardal.fant.auth.User.FIND_ALL_USERS;
+import static no.maardal.fant.auth.User.FIND_USER_BY_IDS;
 
 /**
  * Represents an user in the Fant webstore
@@ -21,12 +34,29 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "AUSER")
+@Data @AllArgsConstructor @NoArgsConstructor
+@NamedQuery(name = FIND_ALL_USERS, query = "select u from User u order by u.firstName")
+@NamedQuery(name = FIND_USER_BY_IDS, query = "select u from User u where u.userid in :ids")
 public class User implements Serializable{
+    public static final String FIND_ALL_USERS = "User.findAllUsers";
+    public static final String FIND_USER_BY_IDS = "User.findAllUsers";
+    
+    public enum State {
+        ACTIVE, INACTIVE
+    }
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "userid")
     private long userId;
+    
+    @Version
+    Timestamp version;
+    
+    @Temporal(javax.persistence.TemporalType.DATE)
+    Date created;
+    
+    @Enumerated(EnumType.STRING)
+    State currentState = State.ACTIVE;
    
     @Email
     @NotNull
@@ -44,90 +74,25 @@ public class User implements Serializable{
     private String firstName;
     
     @NotNull
-    @Column(name = "lastname", nullable = false)
+    @Column(name = "lastName", nullable = false)
     private String lastName;
     
+    @ManyToMany
+    @JoinTable(name="AUSERGROUP",
+            joinColumns = @JoinColumn(name="userid", referencedColumnName = "userid"),
+            inverseJoinColumns = @JoinColumn(name="name", referencedColumnName = "name"))
     @Column(name = "user_group", nullable = false)
     List<Group> groups;
 
-    public User() {
+    @PrePersist
+    protected void onCreate() {
+        created = new Date();
     }
-
-    public User(String email, String password, String firstName, String lastName) {
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
+    
     public List<Group> getGroups() {
         if (groups == null) {
             groups = new ArrayList<>();
         }
         return groups;
     }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + (int) (this.userId ^ (this.userId >>> 32));
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final User other = (User) obj;
-        if (this.userId != other.userId) {
-            return false;
-        }
-        return true;
-    }
-    
-    
 }
