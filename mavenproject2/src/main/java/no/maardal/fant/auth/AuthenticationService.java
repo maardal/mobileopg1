@@ -152,7 +152,7 @@ public class AuthenticationService {
             return Response.status(Response.Status.BAD_REQUEST).build();
         } else {
             user = new User();
-            user.setUserId(uid);
+            user.setUserid(uid);
             user.setPassword(hasher.generate(pwd.toCharArray()));
             Group usergroup = em.find(Group.class, Group.USER);
             user.getGroups().add(usergroup);

@@ -71,9 +71,12 @@ public class FantService {
     public Response addItem(@FormParam("title") String title,
                             @FormParam("desc") String description,
                             @FormParam("price") BigDecimal price,
-                            FormDataMultiPart photos,
+                            /*FormDataMultiPart photos,*/
                             @Context UriInfo uriInfo) {
-        Item item = new Item(title, description, price);
+        Item item = new Item();
+        item.setTitle(title);
+        item.setDescription(description);
+        item.setPrice(price);
         UriBuilder builder = uriInfo.getAbsolutePathBuilder();
         builder.path(Long.toString(item.getItemId()));
         return Response.created(builder.build()).build();

@@ -1,88 +1,81 @@
 package no.maardal.fant.auth;
 
 import java.io.Serializable;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Version;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import static no.maardal.fant.auth.User.FIND_ALL_USERS;
 import static no.maardal.fant.auth.User.FIND_USER_BY_IDS;
 
-/**
- * Represents an user in the Fant webstore
- * @author Martin
- */
 
-@Entity
-@Table(name = "AUSER")
+@Entity @Table(name = "AUSER")
 @Data @AllArgsConstructor @NoArgsConstructor
 @NamedQuery(name = FIND_ALL_USERS, query = "select u from User u order by u.firstName")
 @NamedQuery(name = FIND_USER_BY_IDS, query = "select u from User u where u.userid in :ids")
-public class User implements Serializable{
+public class User implements Serializable {
+    public static final String FIND_USER_BY_IDS = "User.findUserByIds";
     public static final String FIND_ALL_USERS = "User.findAllUsers";
-    public static final String FIND_USER_BY_IDS = "User.findAllUsers";
     
     public enum State {
         ACTIVE, INACTIVE
     }
-    
+
     @Id
-    @Column(name = "userid")
-    private String userId;
-    
+    String userid;
+
+    @JsonbTransient
+    String password;
+
     @Version
     Timestamp version;
-    
+
     @Temporal(javax.persistence.TemporalType.DATE)
     Date created;
-    
+
     @Enumerated(EnumType.STRING)
     State currentState = State.ACTIVE;
-   
-    @Email
-    @NotNull
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
-    
-    
-    @JsonbTransient
-    @NotNull
-    @Column(name = "user_password", nullable = false)
-    private String password;
-    
-    @NotNull
-    @Column(name = "firstName", nullable = false)
-    private String firstName;
-    
-    @NotNull
-    @Column(name = "lastName", nullable = false)
-    private String lastName;
-    
+
     @ManyToMany
     @JoinTable(name="AUSERGROUP",
             joinColumns = @JoinColumn(name="userid", referencedColumnName = "userid"),
-            inverseJoinColumns = @JoinColumn(name="name", referencedColumnName = "name"))
-    @Column(name = "user_group", nullable = false)
+            inverseJoinColumns = @JoinColumn(name="name",referencedColumnName = "name"))
     List<Group> groups;
+
+    String firstName;
+    String middleName;
+    String lastName;
+    String phoneNumber;
+    String email;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "auser_properties", joinColumns=@JoinColumn(name="userid"))
+    @MapKeyColumn(name="key")
+    @Column(name = "value")
+    Map<String,String> properties = new HashMap<>();
 
     @PrePersist
     protected void onCreate() {
@@ -90,7 +83,7 @@ public class User implements Serializable{
     }
     
     public List<Group> getGroups() {
-        if (groups == null) {
+        if(groups == null) {
             groups = new ArrayList<>();
         }
         return groups;
