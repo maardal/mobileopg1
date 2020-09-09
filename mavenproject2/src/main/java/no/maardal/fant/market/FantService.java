@@ -13,10 +13,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 /**
  * REST service class to be used by the UI
@@ -24,10 +22,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 @Path("items")
 public class FantService {
     
-    @GET
-    public Response test() {
-        return Response.ok("test").build();
-    }
+
     /**
      * Public method that returns items with photos sold in the shop
      * @return 
