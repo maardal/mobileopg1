@@ -4,16 +4,19 @@ import no.maardal.fant.market.Item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
+import javax.validation.constraints.NotEmpty;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import no.maardal.fant.auth.Group;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 /**
@@ -63,9 +66,11 @@ public class FantService {
      */
     @POST
     @Path("add")
-    public Response addItem(@FormParam("title") String title,
-                            @FormParam("desc") String description,
-                            @FormParam("price") BigDecimal price,
+    @RolesAllowed(value = {Group.USER})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addItem(@FormParam("title") @NotEmpty String title,
+                            @FormParam("desc") @NotEmpty String description,
+                            @FormParam("price") @NotEmpty BigDecimal price,
                             FormDataMultiPart photos) {
         Item item = new Item();
         item.setTitle(title);
