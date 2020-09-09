@@ -14,13 +14,13 @@ import static no.maardal.fant.DataSourceProducer.JNDI_NAME;
     className = "org.h2.jdbcx.JdbcDataSource",
     url = "jdbc:h2:~/auth.db")
 public class DataSourceProducer {
-    public static final String JNDI_NAME = "java:app/jdbc/default";
-    
+    public static final String JNDI_NAME =  "java:app/jdbc/default";
+
     @Resource(lookup=JNDI_NAME)
     DataSource ds;
-    
+
     @Produces
-    public DataSource getDataSource() {
+    public DataSource getDatasource() {
         return ds;
     }
 }

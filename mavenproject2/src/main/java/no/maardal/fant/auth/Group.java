@@ -2,7 +2,6 @@ package no.maardal.fant.auth;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -21,17 +20,17 @@ public class Group implements Serializable {
     public static final String USER = "user";
     public static final String ADMIN = "admin";
     public static final String[] GROUPS = {USER, ADMIN};
-    
+
     @Id
     String name;
-    
+
     @JsonbTransient
     @ManyToMany
     @JoinTable(name="AUSERGROUP",
             joinColumns = @JoinColumn(name="name", referencedColumnName = "name"),
-            inverseJoinColumns = @JoinColumn(name="userid", referencedColumnName = "userid"))
+            inverseJoinColumns = @JoinColumn(name="userid",referencedColumnName = "userid"))
     List<User> users;
-        
+
     public Group(String name) {
         this.name = name;
     }

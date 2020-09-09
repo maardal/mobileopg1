@@ -41,45 +41,50 @@ import javax.ws.rs.POST;
 import no.maardal.fant.DataSourceProducer;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-
-
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 /**
  * REST service class used for authentication
- * @author Martin
  */
 @Path("auth")
 @Stateless
 @Log
 public class AuthenticationService {
-    
+
     private static final String INSERT_USERGROUP = "INSERT INTO AUSERGROUP(NAME,USERID) VALUES (?,?)";
     private static final String DELETE_USERGROUP = "DELETE FROM AUSERGROUP WHERE NAME = ? AND USERID = ?";
-    
+
     @Inject
-    KeyService keySerivce;
-    
+    KeyService keyService;
+
     @Inject
     IdentityStoreHandler identityStoreHandler;
-    
+
     @Inject
     @ConfigProperty(name = "mp.jwt.verify.issuer", defaultValue = "issuer")
     String issuer;
-    
+
+    /** 
+     * The application server will inject a DataSource as a way to communicate 
+     * with the database.
+     */
     @Resource(lookup = DataSourceProducer.JNDI_NAME)
     DataSource dataSource;
     
+    /** 
+     * The application server will inject a EntityManager as a way to communicate 
+     * with the database via JPA.
+     */
     @PersistenceContext
     EntityManager em;
-    
+
     @Inject
     PasswordHash hasher;
-    
+
     @Inject
     JsonWebToken principal;
-         
-    /**
+
+     /**
      * Does an insert into the AUSER and AUSERGROUP tables. It creates a SHA-256
      * hash of the password and Base64 encodes it before the user is created in
      * the database. The authentication system will read the AUSER table when
@@ -127,7 +132,16 @@ public class AuthenticationService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
-    
+
+    @GET
+    @Path("currentuser")    
+    @RolesAllowed(value = {Group.USER})
+    @Produces(MediaType.APPLICATION_JSON)
+    public User getCurrentUser() {
+        log.log(Level.INFO, principal.getName());
+        return em.find(User.class, principal.getName());
+    }
+
     @PUT
     @Path("changepassword")
     @RolesAllowed(value = {Group.USER})
@@ -153,14 +167,6 @@ public class AuthenticationService {
         }
     }
     
-    @GET
-    @Path("currentuser")    
-    @RolesAllowed(value = {Group.USER})
-    @Produces(MediaType.APPLICATION_JSON)
-    public User getCurrentUser() {
-        return em.find(User.class, principal.getName());
-    }
-
     @PUT
     @Path("addrole")
     @RolesAllowed(value = {Group.ADMIN})
@@ -202,8 +208,8 @@ public class AuthenticationService {
 
         return Response.ok().build();
     }
-    
-        private boolean roleExists(String role) {
+
+    private boolean roleExists(String role) {
         boolean result = false;
 
         if (role != null) {
@@ -218,7 +224,7 @@ public class AuthenticationService {
         return result;
     }
     
-     private String issueToken(String name, Set<String> groups, HttpServletRequest request) {
+    private String issueToken(String name, Set<String> groups, HttpServletRequest request) {
         try {
             Date now = new Date();
             Date expiration = Date.from(LocalDateTime.now().plusDays(1L).atZone(ZoneId.systemDefault()).toInstant());
@@ -227,7 +233,6 @@ public class AuthenticationService {
                     .setHeaderParam("kid", "abc-1234567890")
                     .setSubject(name)
                     .setId("a-123")
-                    //.setIssuer(issuer)
                     .claim("iss", issuer)
                     .setIssuedAt(now)
                     .setExpiration(expiration)
@@ -235,7 +240,7 @@ public class AuthenticationService {
                     .claim("groups", groups)
                     .claim("aud", "aud")
                     .claim("auth_time", now)
-                    .signWith(keySerivce.getPrivate());
+                    .signWith(keyService.getPrivate());
             return jb.compact();
         } catch (InvalidKeyException t) {
             log.log(Level.SEVERE, "Failed to create token", t);
