@@ -20,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import lombok.extern.java.Log;
 import no.maardal.fant.auth.Group;
 import no.maardal.fant.market.Item;
@@ -59,6 +60,19 @@ public class FantService {
         return Response.ok(em.merge(item)).build();
     }
     
+    @POST
+    @Path("remove")
+    @RolesAllowed(value = {Group.USER})
+    public Response removeItem(@FormParam("itemid") @NotEmpty String itemID) {
+        Item item = (Item) em.createNamedQuery(Item.FIND_ITEM_BY_IDS, Item.class);
+//em.find(Item.class, itemID);
+        if (item == null) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        em.remove(item);
+        return Response.ok().build();
+    }
+    
     /**
      * Public method that returns all items with photos for sale in the shop
      * @return 
@@ -78,8 +92,16 @@ public class FantService {
      */
     @GET
     @Path("/{itemId}")
-    public Response getAnItem(@PathParam("itemId") long itemID) {
-        return Response.ok("itemID " + itemID).build();
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAnItem(@PathParam("itemId") String itemID) {
+        Item item = findItem(itemID);
+        return Response.ok(item).build();
+    }
+    
+    private Item findItem(String itemID) {
+        return em.createNamedQuery(Item.FIND_ITEM_BY_IDS, Item.class)
+                 .setParameter("itemid", itemID)
+                 .getSingleResult();
     }
     
     /**
