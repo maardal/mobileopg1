@@ -138,7 +138,6 @@ public class AuthenticationService {
     @RolesAllowed(value = {Group.USER})
     @Produces(MediaType.APPLICATION_JSON)
     public User getCurrentUser() {
-        log.log(Level.INFO, principal.getName());
         return em.find(User.class, principal.getName());
     }
 
