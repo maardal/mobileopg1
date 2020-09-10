@@ -48,15 +48,14 @@ public class FantService {
     @Path("add")
     @RolesAllowed(value = {Group.USER})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addItem(@FormParam("title") /*@NotEmpty*/ String title,
-                            @FormParam("desc") /*@NotEmpty*/ String description,
-                            @FormParam("price") /*@NotNull*/ BigDecimal price/*,
+    public Response addItem(@FormParam("title") @NotEmpty String title,
+                            @FormParam("desc") @NotEmpty String description,
+                            @FormParam("price") @NotNull BigDecimal price/*,
                             FormDataMultiPart photos*/) {
         Item item = new Item();
         item.setTitle(title);
         item.setDescription(description);
         item.setPrice(price);
-        log.log(Level.INFO,"item: " ,item);
         return Response.ok(em.merge(item)).build();
     }
     
