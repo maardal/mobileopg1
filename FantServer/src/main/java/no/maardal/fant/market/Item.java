@@ -15,19 +15,21 @@ import javax.persistence.Version;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import no.maardal.fant.auth.User;
 import static no.maardal.fant.market.Item.FIND_ALL_ITEMS;
-import static no.maardal.fant.market.Item.FIND_ITEM_BY_IDS;
+import static no.maardal.fant.market.Item.FIND_ITEM_BY_ID;
 
 @Entity @Table(name = "AITEM")
 @Data @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode
-@NamedQuery(name = FIND_ITEM_BY_IDS, query = "select i from Item i order by i.itemid")
+@NamedQuery(name = FIND_ITEM_BY_ID, query = "select i from Item i where i.itemid = :itemid")
 @NamedQuery(name = FIND_ALL_ITEMS, query = "select i from Item i")
 public class Item implements Serializable{
-    public static final String FIND_ITEM_BY_IDS = "Item.findItemByIds";
+    public static final String FIND_ITEM_BY_ID = "Item.findItemByIds";
     public static final String FIND_ALL_ITEMS = "Item.findAllItems";
     
     @Version
@@ -49,9 +51,11 @@ public class Item implements Serializable{
     @Digits(integer= 10 ,fraction = 2)
     BigDecimal price;
     
+    @NotNull
+    User seller;
+    
     @PrePersist
     protected void onCreate() {
         created = new Date();
     }
-    
 }

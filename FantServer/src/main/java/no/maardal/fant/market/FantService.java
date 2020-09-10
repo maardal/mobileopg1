@@ -1,12 +1,13 @@
 package no.maardal.fant.market;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,8 +23,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import lombok.extern.java.Log;
+import no.maardal.fant.auth.AuthenticationService;
 import no.maardal.fant.auth.Group;
-import no.maardal.fant.market.Item;
 
 /**
  * REST service class to be used by the UI
@@ -32,7 +33,13 @@ import no.maardal.fant.market.Item;
 @Stateless
 @Log
 public class FantService {
-       
+    
+    @Inject
+    AuthenticationService as;
+    
+    @Inject
+    MailService ms;
+    
     @PersistenceContext
     EntityManager em;
 
@@ -57,22 +64,10 @@ public class FantService {
         item.setTitle(title);
         item.setDescription(description);
         item.setPrice(price);
+        item.setSeller(as.getCurrentUser());
         return Response.ok(em.merge(item)).build();
     }
-    
-    @POST
-    @Path("remove")
-    @RolesAllowed(value = {Group.USER})
-    public Response removeItem(@FormParam("itemid") @NotEmpty String itemID) {
-        Item item = (Item) em.createNamedQuery(Item.FIND_ITEM_BY_IDS, Item.class);
-//em.find(Item.class, itemID);
-        if (item == null) {
-            return Response.status(Status.BAD_REQUEST).build();
-        }
-        em.remove(item);
-        return Response.ok().build();
-    }
-    
+   
     /**
      * Public method that returns all items with photos for sale in the shop
      * @return 
@@ -95,27 +90,44 @@ public class FantService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAnItem(@PathParam("itemId") String itemID) {
         Item item = findItem(itemID);
+        if(item == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
         return Response.ok(item).build();
     }
-    
-    private Item findItem(String itemID) {
-        return em.createNamedQuery(Item.FIND_ITEM_BY_IDS, Item.class)
-                 .setParameter("itemid", itemID)
-                 .getSingleResult();
-    }
-    
+       
     /**
      * A registered user may purchase an Item.An email will be sent to the
      * seller if the purchase is successful.
      * @param itemid unique id for item
      * @return resutlt of purchase request
      */
-    @DELETE
-    @Path("delete/{itemid}")
-    public Response delete(@PathParam("itemid") long itemid) {
-        return Response.ok("deleting").build(); //to avoid errors
+    public Response purchase(String itemid) {
+        return Response.ok().build();
     }
     
+    
+    /**
+     * A registered user may remove an item and associated photos owned by the
+     * calling user. An user with administrator privileges remove any item
+     * and associated photos
+     * @param itemid unique id for item to be deleted
+     * @return result of delte request
+     */
+    @DELETE
+    @Path("delete")
+    @RolesAllowed(value = {Group.USER})
+    public Response delete(@FormParam("itemid") @NotEmpty String itemID) {
+        Item item = findItem(itemID);
+        if (item == null) {
+            log.log(Level.FINE, "findItem called on non-existing Item ID");
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        em.remove(item);
+        log.log(Level.INFO, "Item with ID " + itemID + " removed");
+        return Response.status(Status.NO_CONTENT).build();
+    }
+       
     /**
      * Streams an image to the browser (the actual compressed pixels). The image
      * will be scaled to the appropriate width if the width parameter is
@@ -132,5 +144,23 @@ public class FantService {
     public Response getPhoto(@PathParam("name") String name,
                              @QueryParam("width") int width) {
         return Response.ok().build();
+    }
+    
+    /**
+     * 
+     * @param itemID 
+     * @return Item item wih matching itemID, null if not.
+     */
+    private Item findItem(String itemID) {
+    Item item;
+    try {
+        item = em.createNamedQuery(Item.FIND_ITEM_BY_ID, Item.class)
+                 .setParameter("itemid", itemID)
+                 .getSingleResult();
+    } catch (NoResultException e) {
+        log.log(Level.FINE, "findItem called on non-existing Item ID", e);
+        item = null;
+    }
+    return item;
     }
 }
