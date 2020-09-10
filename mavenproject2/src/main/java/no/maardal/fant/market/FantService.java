@@ -66,7 +66,9 @@ public class FantService {
     @GET
     @Path("all")
     public List<Item> getItems() {
-        return new ArrayList<>(); //only to be able to compile.
+        return em
+                .createNamedQuery(Item.FIND_ALL_ITEMS, Item.class)
+                .getResultList(); 
     }
     
     /**
