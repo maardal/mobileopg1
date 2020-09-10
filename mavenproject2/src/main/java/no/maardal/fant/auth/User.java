@@ -25,6 +25,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Version;
+import javax.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -69,6 +70,7 @@ public class User implements Serializable {
     String middleName;
     String lastName;
     String phoneNumber;
+    @Email
     String email;
 
     @ElementCollection(fetch = FetchType.LAZY)
