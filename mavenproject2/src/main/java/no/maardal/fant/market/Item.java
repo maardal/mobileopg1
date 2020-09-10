@@ -25,7 +25,7 @@ import static no.maardal.fant.market.Item.FIND_ITEM_BY_IDS;
 @Entity @Table(name = "AITEM")
 @Data @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode
 @NamedQuery(name = FIND_ITEM_BY_IDS, query = "select i from Item i order by i.itemid")
-@NamedQuery(name = FIND_ALL_ITEMS, query = "select i from Item i where i.itemid in :ids")
+@NamedQuery(name = FIND_ALL_ITEMS, query = "select i from Item i")
 public class Item implements Serializable{
     public static final String FIND_ITEM_BY_IDS = "Item.findItemByIds";
     public static final String FIND_ALL_ITEMS = "Item.findAllItems";
