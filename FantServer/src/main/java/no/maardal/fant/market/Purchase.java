@@ -7,9 +7,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -41,8 +39,6 @@ public class Purchase implements Serializable {
     String purchaseid;
     
     @NotNull
-    @OneToOne
-    @JoinColumn(name = "itemid", referencedColumnName = "itemid")
     String itemid;
     
     @NotNull

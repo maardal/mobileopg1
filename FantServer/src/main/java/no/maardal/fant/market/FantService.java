@@ -1,6 +1,7 @@
 package no.maardal.fant.market;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import javax.annotation.security.RolesAllowed;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.Response.Status;
 import lombok.extern.java.Log;
 import no.maardal.fant.auth.AuthenticationService;
 import no.maardal.fant.auth.Group;
+import no.maardal.fant.auth.User;
 
 /**
  * REST service class to be used by the UI
@@ -91,19 +93,51 @@ public class FantService {
     public Response getAnItem(@PathParam("itemId") String itemID) {
         Item item = findItem(itemID);
         if(item == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Status.NOT_FOUND).build();
         }
         return Response.ok(item).build();
     }
        
     /**
-     * A registered user may purchase an Item.An email will be sent to the
+     * A registered user may purchase an Item. An email will be sent to the
      * seller if the purchase is successful.
      * @param itemid unique id for item
      * @return resutlt of purchase request
      */
-    public Response purchase(String itemid) {
-        return Response.ok().build();
+    @GET
+    @Path("purchase")
+    @RolesAllowed(value = {Group.USER})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response purchase(@QueryParam("itemid") String itemid) {
+        Item item = findItem(itemid);
+        if (item == null) {
+            log.log(Level.INFO, "Purchase: Item not found");
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        if (item.getSold() == true) {
+            log.log(Level.INFO, "Purchase: Item already sold");
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        User seller = item.getSeller();
+        User buyer = as.getCurrentUser();
+        if (seller.getUserid().equals(buyer.getUserid()))
+        {
+            log.log(Level.INFO, "Purchase: Seller try to buy own item");
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        Purchase purchase = new Purchase();
+        purchase.setBuyer(buyer);
+        purchase.setSeller(seller);
+        purchase.setItemid(itemid);
+        em.persist(purchase);
+        
+        item.setSold(true);
+        
+        log.log(Level.INFO, "Purchase: Purchase Successful");
+        ms.sendEmail(seller.getEmail(), "Item: " + item.getTitle() + "sold",
+                "Your funky item was sold to");
+        
+        return Response.ok(purchase).build();
     }
     
     

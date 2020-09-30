@@ -54,8 +54,11 @@ public class Item implements Serializable{
     @NotNull
     User seller;
     
+    Boolean sold;
+    
     @PrePersist
     protected void onCreate() {
         created = new Date();
+        sold = false;
     }
 }
