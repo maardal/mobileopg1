@@ -1,12 +1,16 @@
 
 package no.maardal.fant.market;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Version;
@@ -23,7 +27,7 @@ import static no.maardal.fant.market.Purchase.FIND_PURCHASE_BY_ID;
 @Data @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode
 @NamedQuery(name = FIND_PURCHASE_BY_ID, query = "select p from Purchase p where p.purchaseid = :purchaseid")
 @NamedQuery(name = FIND_ALL_PURCHASES, query = "select p from Purchase p")
-public class Purchase implements Serializeable {
+public class Purchase implements Serializable {
     public static final String FIND_PURCHASE_BY_ID = "Purchase.findPurchaseByIds";
     public static final String FIND_ALL_PURCHASES = "Purchase.findAllPurchases";
     
@@ -31,12 +35,14 @@ public class Purchase implements Serializeable {
     Timestamp version;
     
     @Temporal(javax.persistence.TemporalType.DATE)
-    Date created;
+    Date purchaseDate;
     
     @Id @GeneratedValue
     String purchaseid;
     
     @NotNull
+    @OneToOne
+    @JoinColumn(name = "itemid", referencedColumnName = "itemid")
     String itemid;
     
     @NotNull
@@ -44,4 +50,9 @@ public class Purchase implements Serializeable {
     
     @NotNull
     User buyer;
+    
+    @PrePersist
+    protected void onCreate() {
+        purchaseDate = new Date();
+    }
 }
