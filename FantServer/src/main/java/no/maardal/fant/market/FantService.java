@@ -123,6 +123,10 @@ public class FantService {
             log.log(Level.FINE, "findItem called on non-existing Item ID");
             return Response.status(Status.NOT_FOUND).build();
         }
+        if (!as.getCurrentUser().getUserid().equals(item.getSeller().getUserid())) {
+            log.log(Level.WARNING, "Delete Item: Unathorized user ");
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
         em.remove(item);
         log.log(Level.INFO, "Item with ID " + itemID + " removed");
         return Response.status(Status.NO_CONTENT).build();
