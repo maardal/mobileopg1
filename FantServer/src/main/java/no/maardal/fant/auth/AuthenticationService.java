@@ -119,7 +119,7 @@ public class AuthenticationService {
             @QueryParam("pwd") @NotBlank String pwd,
             @Context HttpServletRequest request) {
         CredentialValidationResult result = identityStoreHandler.validate(
-                new UsernamePasswordCredential(uid, pwd));
+                new UsernamePasswordCredential(uid.trim(), pwd.trim()));
 
         if (result.getStatus() == CredentialValidationResult.Status.VALID) {
             String token = issueToken(result.getCallerPrincipal().getName(),
@@ -129,6 +129,7 @@ public class AuthenticationService {
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .build();
         } else {
+            log.log(Level.INFO, "Login: Unauthorized User");
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
