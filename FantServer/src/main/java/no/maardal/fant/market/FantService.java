@@ -117,7 +117,7 @@ public class FantService {
     @DELETE
     @Path("delete")
     @RolesAllowed(value = {Group.USER})
-    public Response delete(@FormParam("itemid") @NotEmpty String itemID) {
+    public Response delete(@QueryParam("itemid") @NotEmpty String itemID) {
         Item item = findItem(itemID);
         if (item == null) {
             log.log(Level.FINE, "findItem called on non-existing Item ID");
